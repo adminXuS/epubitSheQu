@@ -11,7 +11,7 @@ class ExecutorBase:
         else:
             self.driver = executor
 
-        if url not in None:
+        if url is not None:
             self.driver.get(url)
     #初始化执行器
     def __init__executor(self):
@@ -48,11 +48,20 @@ class ExecutorBase:
         return self.driver.find_elements(self.__get__locator(key), value)
     #等待元素消失
     def wait_for_element_until_not(self, get_element_func, seconds = 5):
-        WebDriverWait(self.get_executor(), seconds).until_not(lambda a: get_element_func)
+        WebDriverWait(self.get_executor(), seconds).until_not(lambda d: get_element_func)
     #等待元素出现
     def wait_for_element_until(self, get_element_func, seconds = 5):
-        WebDriverWait(self.get_executor(), seconds).until(lambda a: get_element_func)
+        WebDriverWait(self.get_executor(), seconds).until(lambda d: get_element_func.is_displayed())
+    #子元素
+    def get_element_in(self, get_elements, key, value):
+        return get_elements.find_element(self.__get__locator(key), value)
     #切换浏览器句柄
     def switch_to_window(self):
         lastWindowIndex = len(self.get_executor().window_handles) - 1
         self.get_executor().switch_to.window(self.get_executor().window_handles[lastWindowIndex])
+    #点击操作
+    def get_click_element(self, elementData):
+        elementData.click()
+    #输入操作
+    def get_send_keys_element(self, elementData, word):
+        elementData.send_keys(word)
