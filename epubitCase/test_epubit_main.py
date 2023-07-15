@@ -28,17 +28,17 @@ class Test_epubit_main():
 
     def teardown_method(self):
         self.homePage.quit_executor()
-    
+    #解耦测试用例和操作
     @pytest.mark.parametrize('url, waitTime, type, name', CaseData.epubitCase_data)
     def test_epubit_select_book(self, waitTime, url, type, name):
         self.homePage.get_click_element(self.homePage.selectElement())  # 点击放大镜
-        self.homePage.wait_for_element_until(self.homePage.searchResult())      #等待结果页加载
+        self.homePage.wait_for_element_until(self.homePage.searchResult(), seconds= waitTime)      #等待结果页加载
         self.homePage.get_click_element(self.homePage.inputElement())      #点击搜索输入框
         self.homePage.get_send_keys_element(self.homePage.inputElement(), name)     #搜索框输入
         self.homePage.get_click_element(self.homePage.selectProduct())     #点击搜索
-        self.homePage.wait_for_element_until_not(self.homePage.filter_loadingMask())   #等待遮罩消失
+        self.homePage.wait_for_element_until_not(self.homePage.filter_loadingMask(), seconds= waitTime)   #等待遮罩消失
         self.homePage.get_click_element(self.homePage.changeType(type))  #切换搜索类型
-        self.homePage.wait_for_element_until_not(self.homePage.filter_loadingMask())   #等待遮罩消失
+        self.homePage.wait_for_element_until_not(self.homePage.filter_loadingMask(), seconds= waitTime)   #等待遮罩消失
         resultElement = self.homePage.selectResult()    #获取所有的搜索结果
         print("====================验证测试结果====================")
         print("测试数据；type："+type+"\t搜索内容："+name)

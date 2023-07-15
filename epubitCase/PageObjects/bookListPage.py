@@ -10,6 +10,7 @@ from epubitCase.BaseLayer.executorBase import ExecutorBase
 
 class BookListPage(ExecutorBase):
     """
+    继承 ExecutorBase 模块后，不需要初始化函数
     def __init__(self, driver):
         self.driver = driver
     """
