@@ -52,7 +52,16 @@ class ExecutorBase:
     #等待元素出现
     def wait_for_element_until(self, get_element_func, seconds = 5):
         WebDriverWait(self.get_executor(), seconds).until(lambda a: get_element_func)
+    #子元素
+    def get_element_in(self, get_elements, key, value):
+        return get_elements.find_element(self.__get__locator(key), value)
     #切换浏览器句柄
     def switch_to_window(self):
         lastWindowIndex = len(self.get_executor().window_handles) - 1
         self.get_executor().switch_to.window(self.get_executor().window_handles[lastWindowIndex])
+    #点击操作
+    def get_click_element(self, elementData):
+        elementData.click()
+    #输入操作
+    def get_send_keys_element(self, elementData, word):
+        elementData.send_keys(word)
