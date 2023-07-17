@@ -16,36 +16,38 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from epubitCase.caseData import CaseData
-from epubitCase.BaseLayer.executorBase import ExecutorBase
 from epubitCase.PageObjects.homePage import HomePage
-from epubitCase.PageObjects.bookListPage import BookListPage
+from epubitCase.PageObjects.searchListPage import SearchListPage
+from epubitCase.PageObjects.searchPage import SearchPage
+from config import Config
 
 class Test_epubit_main():
     def setup_method(self):
-        homeUrl = "https://www.epubit.com/"
-        self.homePage = HomePage(url= homeUrl)
-        #self.bookListPage = BookListPage(self.homePage.get_executor())
+        homeUrl = Config.url
+        self.homePage = HomePage(url= homeUrl)      #首页实例
+        self.searchListPage  = SearchListPage(executor = self.homePage.get_executor())      #搜索结果列表页实例
+        self.searchPage = SearchPage(executor= self.homePage.get_executor())        #搜索页实例
 
     def teardown_method(self):
         self.homePage.quit_executor()
     #解耦测试用例和操作
-    @pytest.mark.parametrize('url, waitTime, type, name', CaseData.epubitCase_data)
-    def test_epubit_select_book(self, waitTime, url, type, name):
+    @pytest.mark.parametrize('waitTime, type, name', CaseData.epubitCase_data)
+    def test_epubit_select_book(self, waitTime, type, name):
         self.homePage.get_click_element(self.homePage.selectElement())  # 点击放大镜
-        self.homePage.wait_for_element_until(self.homePage.searchResult(), seconds= waitTime)      #等待结果页加载
-        self.homePage.get_click_element(self.homePage.inputElement())      #点击搜索输入框
-        self.homePage.get_send_keys_element(self.homePage.inputElement(), name)     #搜索框输入
-        self.homePage.get_click_element(self.homePage.selectProduct())     #点击搜索
-        self.homePage.wait_for_element_until_not(self.homePage.filter_loadingMask(), seconds= waitTime)   #等待遮罩消失
-        self.homePage.get_click_element(self.homePage.changeType(type))  #切换搜索类型
-        self.homePage.wait_for_element_until_not(self.homePage.filter_loadingMask(), seconds= waitTime)   #等待遮罩消失
-        resultElement = self.homePage.selectResult()    #获取所有的搜索结果
+        self.homePage.wait_for_element_until(self.searchPage.searchResult(), seconds= waitTime)      #等待结果页加载
+        self.homePage.get_click_element(self.searchPage.inputElement())      #点击搜索输入框
+        self.homePage.get_send_keys_element(self.searchPage.inputElement(), name)     #搜索框输入
+        self.homePage.get_click_element(self.searchPage.selectProduct())     #点击搜索
+        self.homePage.wait_for_element_until_not(self.searchListPage.filter_loadingMask(), seconds= waitTime)   #等待遮罩消失
+        self.homePage.get_click_element(self.searchListPage.changeType(type))  #切换搜索类型
+        self.homePage.wait_for_element_until_not(self.searchListPage.filter_loadingMask(), seconds= waitTime)   #等待遮罩消失
+        resultElement = self.searchListPage.selectResult()    #获取所有的搜索结果
         print("====================验证测试结果====================")
         print("测试数据；type："+type+"\t搜索内容："+name)
         bearfruit = False
         if len(resultElement) > 0:
             for book in resultElement:
-                bookName = self.homePage.productName(book)
+                bookName = self.searchListPage.productName(book)
                 if name not in bookName:
                     bearfruit = False
                     break
@@ -54,12 +56,10 @@ class Test_epubit_main():
 
         assert bearfruit
 
-    """
-    @pytest.mark.parametrize('url, waitTime, type, name', CaseData.epubitCase_data)
-    def test_epubit_select(self, waitTime, url, type, name):
+    @pytest.mark.parametrize('waitTime, type, name', CaseData.epubitCase_data1)
+    def test_epubit_select(self, waitTime, type, name):
         driver = self.homePage.get_executor()
         driverWait = WebDriverWait(driver, waitTime)
-        driver.get(url)
         driver.implicitly_wait(waitTime)
         driver.find_element(By.CLASS_NAME, "main_border").click()      #点击放大镜
         driverWait.until(lambda a: a.find_element(By.CLASS_NAME, "el-input__inner").is_displayed())
@@ -83,4 +83,3 @@ class Test_epubit_main():
                     bearfruit = True
 
         assert bearfruit
-    """
