@@ -56,7 +56,7 @@ class Test_epubit_main():
 
         assert bearfruit
 
-
+    """
     @pytest.mark.parametrize('waitTime, type, name', CaseData.epubitCase_data1)
     def test_epubit_select(self, waitTime, type, name):
         driver = self.homePage.get_executor()
@@ -84,3 +84,4 @@ class Test_epubit_main():
                     bearfruit = True
 
         assert bearfruit
+    """

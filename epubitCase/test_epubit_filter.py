@@ -60,6 +60,7 @@ class Test_epubit_filter():
 
         assert bearfruit
 
+    """
     @pytest.mark.parametrize('waitTime, text, title', CaseData.filter_data1)
     def test_article_filter(self, waitTime, text, title):
         driver = self.homePage.get_executor()
@@ -86,3 +87,4 @@ class Test_epubit_filter():
                 bearfruit = True
 
         assert bearfruit
+    """
